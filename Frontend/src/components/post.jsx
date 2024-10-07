@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Modal from 'react-modal';
 
 Modal.setAppElement('#root'); // For accessibility, set the app element
 
-const Post = () => {
+const Post = ({ addPost }) => {
   const [modalIsOpen, setModalIsOpen] = useState(false);
 
   const openModal = () => setModalIsOpen(true);
@@ -37,14 +37,14 @@ const Post = () => {
           &times;
         </button>
         <div className="mt-6">
-          <CreatePostModal />
+          <CreatePostModal addPost={addPost} />
         </div>
       </Modal>
     </div>
   );
 };
 
-const CreatePostModal = () => {
+const CreatePostModal = ({ addPost }) => {
   const [image, setImage] = useState(null);
   const [text, setText] = useState('');
 
@@ -56,11 +56,13 @@ const CreatePostModal = () => {
     setText(e.target.value);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle form submission logic
-    console.log('Image:', image);
-    console.log('Text:', text);
+    
+    // Pass the new post data to the parent component
+    await addPost({ image, text });
+    setImage(null); // Reset image
+    setText(''); // Reset text
   };
 
   return (
@@ -100,4 +102,66 @@ const CreatePostModal = () => {
   );
 };
 
-export default Post;
+// Component to display the list of posts
+const PostList = ({ posts }) => {
+  return (
+    <div className="mt-6">
+      <h2 className="text-xl font-bold mb-2">Your Posts</h2>
+      {posts.length > 0 ? (
+        posts.map((post, index) => (
+          <div key={index} className="border border-gray-300 p-4 mb-2 rounded-md">
+            {post.image && <img src={post.image} alt="Post Preview" className="max-w-full h-auto mb-2" />}
+            <p>{post.text}</p>
+          </div>
+        ))
+      ) : (
+        <p className="text-gray-500">You haven't posted anything. Please create a post.</p>
+      )}
+    </div>
+  );
+};
+
+const App = () => {
+  const [posts, setPosts] = useState([]); // State to store all posts
+
+  const fetchPosts = async () => {
+    try {
+      const response = await fetch('YOUR_BACKEND_API_URL/posts'); // Replace with your API URL
+      const data = await response.json();
+      setPosts(data); // Assuming the data is an array of posts
+    } catch (error) {
+      console.error('Error fetching posts:', error);
+    }
+  };
+
+  const addPost = async (newPost) => {
+    try {
+      // Send the new post to the backend
+      await fetch('YOUR_BACKEND_API_URL/posts', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(newPost),
+      });
+
+      // Fetch updated posts after adding a new one
+      fetchPosts();
+    } catch (error) {
+      console.error('Error adding post:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchPosts(); // Fetch posts when the component mounts
+  }, []);
+
+  return (
+    <div>
+      <Post addPost={addPost} />
+      <PostList posts={posts} />
+    </div>
+  );
+};
+
+export default App;
