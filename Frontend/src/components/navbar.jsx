@@ -1,17 +1,15 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
 
-
 const Navbar = () => {
-
     const location = useLocation();
     return (
         <nav className="w-full bg-white bg-opacity-70 drop-shadow-md sticky top-0 z-50">
             <div className="flex justify-between items-center text-black py-4 px-8 md:px-32">
-                <a href="#" className="hidden xl:flex items-center font-semibold text-base">
+                <Link to="/blogs" className="hidden xl:flex items-center font-semibold text-base">
                     <img src="#" alt="" className='w-10 hover:scale-105 transition-all' />
                     <h2 className="hover:bg-sky-400 hover:text-white rounded-md transition-all cursor-pointer">BlogPost</h2>
-                </a>
+                </Link>
                 <nav>
                     <ul className='flex space-x-4'>
                         <li>
@@ -40,25 +38,23 @@ const Navbar = () => {
                         </li>
                     </ul>
                 </nav>
-                <ul className='flex '>
+                <ul className='flex'>
                     <li>
                         <Link
                             to='/signup'
                             className={`px-4 py-2 ${location.pathname === '/signup' ? 'bg-blue-600 text-white' : 'text-blue-800'}`}
                         >
-                            sign up
+                            Sign Up
                         </Link>
                     </li>
-                    
                     <li>
                         <Link
                             to='/signin'
                             className={`px-4 py-2 ${location.pathname === '/signin' ? 'bg-blue-600 text-white' : 'text-blue-800'}`}
                         >
-                            sign in
+                            Sign In
                         </Link>
                     </li>
-                    
                 </ul>
             </div>
         </nav>
