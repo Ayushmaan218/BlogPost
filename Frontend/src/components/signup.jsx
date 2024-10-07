@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom'; // Import useNavigate from react-router-dom
 
 const Signup = () => {
   const [username, setUsername] = useState('');
@@ -6,6 +7,8 @@ const Signup = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
+  
+  const navigate = useNavigate(); // Initialize useNavigate hook
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -30,6 +33,9 @@ const Signup = () => {
     setPassword('');
     setConfirmPassword('');
     setError('');
+
+    // Navigate to /blogs on successful signup
+    navigate('/blogs');
   };
 
   return (
@@ -108,9 +114,9 @@ const Signup = () => {
         <div className="text-center mt-4">
           <p className="text-sm text-gray-600">
             Already have an account?{' '}
-            <a href="/signin" className="text-sky-500 hover:underline">
+            <Link to="/signin" className="text-sky-500 hover:underline">
               Sign in
-            </a>
+            </Link>
           </p>
         </div>
       </div>
