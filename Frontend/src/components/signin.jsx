@@ -1,9 +1,18 @@
 import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+
+// Simulating existing user accounts
+const users = [
+  { email: 'user1@example.com', password: 'password123' },
+  { email: 'user2@example.com', password: 'password456' }
+];
 
 const Signin = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+
+  const navigate = useNavigate(); // Initialize useNavigate hook
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -14,13 +23,30 @@ const Signin = () => {
       return;
     }
 
-    // Perform your signin logic here
-    console.log('Signin attempt', { email, password });
+    // Check if the account exists
+    const user = users.find(user => user.email === email);
 
-    // Clear form and error on success (this is just an example)
+    if (!user) {
+      setError('Account does not exist');
+      return;
+    }
+
+    // Check if the password matches
+    if (user.password !== password) {
+      setError('Incorrect password');
+      return;
+    }
+
+    // Successful signin
+    console.log('Signin successful', { email });
+
+    // Clear form and error on success
     setEmail('');
     setPassword('');
     setError('');
+
+    // Navigate to /blogs on successful signin
+    navigate('/blogs');
   };
 
   return (
@@ -69,9 +95,9 @@ const Signin = () => {
         <div className="text-center mt-4">
           <p className="text-sm text-gray-600">
             Don't have an account?{' '}
-            <a href="/signup" className="text-sky-500 hover:underline">
+            <Link to="/signup" className="text-sky-500 hover:underline">
               Sign up
-            </a>
+            </Link>
           </p>
         </div>
       </div>
