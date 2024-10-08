@@ -1,8 +1,18 @@
 import React from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
-const Navbar = () => {
+const Navbar = ({ isSignedIn }) => {
     const location = useLocation();
+    const navigate = useNavigate();
+
+    const handlePostClick = (e) => {
+        if (!isSignedIn) {
+            e.preventDefault(); // Prevent the default link behavior
+            alert("You are not signed in! Please sign up to create a post.");
+            navigate('/signup');
+        }
+    };
+
     return (
         <nav className="w-full bg-white bg-opacity-70 drop-shadow-md sticky top-0 z-50">
             <div className="flex justify-between items-center text-black py-4 px-8 md:px-32">
@@ -24,6 +34,7 @@ const Navbar = () => {
                             <Link
                                 to='/post'
                                 className={`px-4 py-2 ${location.pathname === '/post' ? 'bg-blue-600 text-white' : 'text-blue-800'}`}
+                                onClick={handlePostClick}
                             >
                                 Post
                             </Link>
